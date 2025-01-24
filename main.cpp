@@ -13,8 +13,22 @@ int main(int argc, char *argv[]) {
 
     QDir dir;
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLCIPHER");
-    db.setDatabaseName(dir.toNativeSeparators("/home/alex/Qt_projects/Database/encrypted.sqlite3"));
+    db.setDatabaseName(dir.toNativeSeparators("/home/alex/Qt_projects/encrypted.sqlite3"));
     db.open();
+
+    /**********************************************************
+    **
+    ** For sqlitestudio
+    ** cipher configuration:
+    **   - PRAGMA kdf_iter = '64000';
+    **   - PRAGMA cipher_page_size = 1024;
+    **   - PRAGMA cipher_hmac_algorithm = HMAC_SHA1;
+    **   - PRAGMA cipher_default_kdf_algorithm = PBKDF2_HMAC_SHA1;
+    **
+    ** Source:
+    ** https://stackoverflow.com/questions/49048770/open-encrypted-sqlite-database-with-sqlitestudio
+    **
+    ***********************************************************/
 
     QSqlQuery q;
     q.exec("PRAGMA key = 'testkey';");
