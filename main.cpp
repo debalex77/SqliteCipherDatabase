@@ -1,12 +1,12 @@
 #include <QCoreApplication>
+#include <QDebug>
+#include <QDir>
 #include <QSqlDatabase>
 #include <QSqlQuery>
-#include <QDebug>
 #include <QString>
-#include <QDir>
 
-int main(int argc, char *argv[]) {
-
+int main(int argc, char *argv[])
+{
     QCoreApplication a(argc, argv);
 
     qDebug() << QSqlDatabase::drivers();
@@ -19,11 +19,17 @@ int main(int argc, char *argv[]) {
     /**********************************************************
     **
     ** For sqlitestudio
-    ** cipher configuration:
+    ** SQLCipher 3.6 > configuration:
     **   - PRAGMA kdf_iter = '64000';
     **   - PRAGMA cipher_page_size = 1024;
     **   - PRAGMA cipher_hmac_algorithm = HMAC_SHA1;
     **   - PRAGMA cipher_default_kdf_algorithm = PBKDF2_HMAC_SHA1;
+    **
+    ** SQLCipher 4 configuration:
+    **   - PRAGMA kdf_iter = 256000;     // sau 64000
+    **   - PRAGMA cipher_page_size = 4096;
+    **   - PRAGMA cipher_hmac_algorithm = HMAC_SHA512;
+    **   - PRAGMA cipher_kdf_algorithm = PBKDF2_HMAC_SHA512;
     **
     ** Source:
     ** https://stackoverflow.com/questions/49048770/open-encrypted-sqlite-database-with-sqlitestudio
@@ -32,7 +38,7 @@ int main(int argc, char *argv[]) {
 
     QSqlQuery q;
     q.exec("PRAGMA key = 'testkey';");
-    if (! q.exec("SELECT count(*) FROM sqlite_master;")) {
+    if (!q.exec("SELECT count(*) FROM sqlite_master;")) {
         qDebug() << "Password not correct !!!";
         db.close();
         return 0;
